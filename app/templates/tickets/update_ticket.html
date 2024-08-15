@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+<h2>{{ticket}}</h2>
+<hr>
+<form method="post"
+    enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <div class="d-grid">
+        <button type="submit"
+            class="btn btn-warning">Update Ticket</button>
+    </div>
+</form>
+{% endblock %}

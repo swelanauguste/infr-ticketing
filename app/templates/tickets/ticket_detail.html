@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% load humanize %}
+
+{% load user_role_filters %}
+
+
+{% block content %}
+<h2>{{ticket.title|title}}</h2>
+<hr>
+<p>{{ticket.description}}</p>
+<p class="text-end fw-bold">{{ticket.category|title}}</p>
+
+<hr>
+<p>Status/Priority: {{ticket.status|title}}/{{ticket.priority|title}}</p>
+<p>Assigned to: {{ticket.assigned_to}}</p>
+<p>Att: {{ticket.attachment}}</p>
+<p>Fix: {{ticket.resolution}}</p>
+<p>tags:
+    {% for tag in ticket.tags.all %}
+    <a href="">{{tag}},</a>
+    {% endfor %}
+</p>
+<p title="created"
+    class="text-end text-muted small"><a class="text-muted"
+        href="">{{ticket.created_by.first_name}}</a>
+    {{ticket.created_at|naturaltime}}</p>
+<hr>
+
+
+{% if request.user|has_role:"tech" or request.user|has_role:"manager" %}
+    <a href="{% url 'ticket_support_detail' ticket.pk %}">Update</a>
+{% endif %}
+
+    
+
+    
+
+{% endblock content %}
+
+
+    
