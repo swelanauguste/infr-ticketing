@@ -3,4 +3,4 @@ django-allauth==64.0.0
 python-dotenv==1.0.1
 crispy-bootstrap5==2024.2
 django-pwa==2.0.0
-django-sslserver==0.22
+django-after-response==0.2.2

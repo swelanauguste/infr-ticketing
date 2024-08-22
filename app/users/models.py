@@ -2,16 +2,13 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
-class Role(models.Model):
-    name = models.CharField(max_length=50, unique=True)
-    description = models.TextField(null=True, blank=True)
-
-    def __str__(self):
-        return self.name
-
-
 class User(AbstractUser):
-    roles = models.ManyToManyField(Role, blank=True, related_name="users")
+    ROLE_CHOICES = (
+        ("customer", "Customer"),
+        ("agent", "Support Agent"),
+        ("admin", "Admin"),
+    )
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default="customer")
     profile_picture = models.FileField(
         upload_to="profile_pictures/", null=True, blank=True
     )

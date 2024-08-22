@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+    <title>New Ticket Created</title>
+</head>
+
+<body>
+    <h2>New Ticket: {{ ticket.id }} Created</h2>
+    <p>{{ ticket.created_by }},</p>
+    <p>A new ticket has been created. Here are the details:</p>
+
+    <p><strong>Ticket ID:</strong> {{ ticket.id }}</p>
+    <p><strong>Description:</strong> {{ ticket.description }}</p>
+
+    <p>You can view the details of the ticket by clicking on the following
+        link:</p>
+
+    <p><a href="{{full_url}}">View Ticket</a></p>
+
+    <p>Thank you for using our ticketing system.</p>
+
+    <p>Best regards,
+        <br>Your Support Team
+    </p>
+</body>
+
+</html>

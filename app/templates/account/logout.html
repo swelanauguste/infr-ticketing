@@ -17,9 +17,11 @@
             {{ redirect_field }}
         {% endslot %}
         {% slot actions %}
-            {% element button type="submit" %}
+        <div class="d-grid">
+            {% element class="btn btn-dark" button type="submit" %}
                 {% trans 'Sign Out' %}
             {% endelement %}
+        </div>
         {% endslot %}
     {% endelement %}
 {% endblock content %}

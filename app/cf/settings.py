@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     "crispy_forms",
     "crispy_bootstrap5",
     "pwa",
-    "sslserver",
+    "after_response",
     "users",
     "tickets",
 ]
@@ -117,7 +117,7 @@ USE_I18N = True
 
 USE_TZ = True
 
-directories = ["templates", "static"]
+directories = ["templates", "static", "debug", "static/css", "static/images"]
 
 for directory in directories:
     if not os.path.exists(directory):
@@ -172,8 +172,8 @@ ADMINS = [
 ]
 
 if DEBUG:
-    EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
-    EMAIL_FILE_PATH = "emails"
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+    # EMAIL_FILE_PATH = "emails"
 else:
     EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
     EMAIL_HOST = "mail.govt.lc"
@@ -206,7 +206,7 @@ LOGGING = {
         "file": {
             "level": "WARNING",
             "class": "logging.FileHandler",
-            "filename": BASE_DIR / "debug.log",
+            "filename": BASE_DIR / "debug/debug.log",
             "formatter": "verbose",
         },
         "mail_admins": {

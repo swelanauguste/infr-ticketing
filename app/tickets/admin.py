@@ -1,11 +1,10 @@
 from django.contrib import admin
 from users.models import User
 
-from .models import Category, Tag, Ticket
+from .models import Category, Ticket, Comment
 
-admin.site.register(Tag)
 admin.site.register(Category)
-
+admin.site.register(Comment)
 
 class TicketAdmin(admin.ModelAdmin):
     def formfield_for_foreignkey(self, db_field, request, **kwargs):

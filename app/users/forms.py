@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Role, User
+from .models import User
 
 
 class UserUpdateForm(forms.ModelForm):
@@ -17,9 +17,6 @@ class UserUpdateForm(forms.ModelForm):
 
 
 class ManagerUserUpdateForm(forms.ModelForm):
-    roles = forms.ModelMultipleChoiceField(
-        queryset=Role.objects.all(), widget=forms.CheckboxSelectMultiple, required=False
-    )
 
     class Meta:
         model = User
@@ -29,10 +26,10 @@ class ManagerUserUpdateForm(forms.ModelForm):
             "last_name",
             "email",
             "phone",
-            "roles",
+            "role",
         ]
 
     def __init__(self, *args, **kwargs):
-        super(UserUpdateForm, self).__init__(*args, **kwargs)
+        super(ManagerUserUpdateForm, self).__init__(*args, **kwargs)
         if self.instance and self.instance.pk:
-            self.fields["roles"].initial = self.instance.roles.all()
+            self.fields["role"].initial = self.instance.roles.all()

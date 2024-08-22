@@ -1,13 +1,22 @@
+{% if request.user.is_authenticated %}
 <div class="sticky-top d-flex justify-content-end px-5 text-bg-warning py-2">
     {% if request.user.is_authenticated %}
-    <a class="text-white" href="{% url 'user_detail' request.user.id %}">
+    <a class="text-white"
+        href="{% url 'user-detail' %}">
         {% if request.user.profile_picture %}
-        <img class="rounded-circle border border-info border-2" style="height: 2rem" src="{{request.user.profile_picture.url}}" alt="" srcset="">
+        <img class="rounded-circle border border-info border-2"
+            style="height: 2rem"
+            src="{{request.user.profile_picture.url}}"
+            alt=""
+            srcset="">
         {% else %}
-        <span class="material-symbols-outlined fs-1">
+        <span class="material-symbols-outlined text-dark fs-1">
             account_circle
         </span>
         {% endif %}
     </a>
     {% endif %}
 </div>
+{% include 'messages.html' %}
+
+{% endif %}

@@ -1,7 +1,18 @@
 from django import forms
-from users.models import User, Role
+from users.models import User
 
-from .models import Category, Ticket
+from .models import Category, Comment, Ticket
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ["content"]
+        widgets = {
+            "content": forms.Textarea(
+                attrs={"rows": 3, "placeholder": "Add a comment..."}
+            ),
+        }
 
 
 class TicketCreateForm(forms.ModelForm):
@@ -13,7 +24,6 @@ class TicketCreateForm(forms.ModelForm):
             "priority",
             "category",
             "attachment",
-            "tags",
         ]
 
     description = forms.CharField(
@@ -24,16 +34,6 @@ class TicketCreateForm(forms.ModelForm):
             }
         )
     )
-    tags = forms.ModelMultipleChoiceField(
-        queryset=Category.objects.all(),
-        widget=forms.CheckboxSelectMultiple,
-        required=False,
-    )
-
-    def __init__(self, *args, **kwargs):
-        super(TicketCreateForm, self).__init__(*args, **kwargs)
-        # Optionally, you can customize the queryset for categories as well
-        self.fields["category"].queryset = Category.objects.all()
 
 
 class TicketUpdateForm(forms.ModelForm):
@@ -58,9 +58,19 @@ class TicketUpdateForm(forms.ModelForm):
     )
 
     def __init__(self, *args, **kwargs):
-        super(TicketUpdateForm, self).__init__(*args, **kwargs)
-        # Filter users with 'tech' role for the 'assigned_to' field
-        tech_role = Role.objects.get(name='tech')
-        self.fields['assigned_to'].queryset = User.objects.filter(roles=tech_role)
-        # Optionally, you can customize the queryset for categories as well
-        self.fields["category"].queryset = Category.objects.all()
+        super(TicketForm, self).__init__(*args, **kwargs)
+        # Filter the queryset for 'assigned_to' field to include only 'Support Agent' users
+        self.fields["assigned_to"].queryset = User.objects.filter(role="agent")
+
+
+class TicketAssignForm(forms.ModelForm):
+    class Meta:
+        model = Ticket
+        fields = [
+            "assigned_to",
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super(TicketForm, self).__init__(*args, **kwargs)
+        # Filter the queryset for 'assigned_to' field to include only 'Support Agent' users
+        self.fields["assigned_to"].queryset = User.objects.filter(role="agent")

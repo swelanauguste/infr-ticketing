@@ -2,34 +2,8 @@
 
 
 {% block content %}
-{% if object.profile_picture %}
-
-<div class="row">
-    <div class="text-center">
-    <img class="rounded-4"
-        style="height: 8rem; width: 8rem;"
-        src="{{object.profile_picture.url}}"
-        alt=""
-        srcset="">
-    </div>
-</div>
-<hr>
-{% endif %}
-
-<div class="row">
-    <p>{{object.first_name}} {{object.last_name}}
-
-        {% for role in object.roles.all %}
-        <span class="badge bg-primary">{{role|title}}</span>
-        {% endfor %}
-    </p>
-    <p><a class="text-dark" href="mailto:{{object.email}}">{{object.email}}</a></p>
-    <p><a class="text-dark" href="tel:{{object.phone}}">{{object.phone}}</a></p>
-    <p>{{user}}</p>
-</div>
-<hr>
-<div class="d-flex justify-content-around">
-    <a class="text-dark"
+<div class="d-flex justify-content-between pt-3">
+    <a class="text-dark me-3 text-decoration-none"
         href="{% url 'user_update' request.user.id %}">
         <span class="material-symbols-outlined fs-1">
             edit
@@ -41,6 +15,37 @@
             logout
         </span>
     </a>
+</div><br>
+{% if user.profile_picture %}
+<div class="row">
+    <div class="text-center">
+        <img class="rounded-5 shadow"
+            style="height: 8rem; width: 8rem;"
+            src="{{user.profile_picture.url}}"
+            alt=""
+            srcset="">
+    </div>
 </div>
+<hr>
+{% endif %}
+<div class="row">
+    <p><span>{{user}}</span>
+        <span class="ms-3 badge bg-primary">{{user.role|title}}</span>
+    </p>
+    <p><a class="text-dark"
+            href="mailto:{{user.email}}">{{user.email}}</a></p>
+
+    {% if user.phone %}
+    <p><a class="text-dark"
+            href="tel:{{user.phone}}">{{user.phone|default:'ext'}}</a></p>
+    {% endif %}
+
+
+</div>
+<hr>
+<div>
+
+</div>
+
 
 {% endblock content %}
