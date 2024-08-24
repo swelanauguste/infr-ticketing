@@ -45,16 +45,15 @@ def user_ticket_list(request):
 
 @login_required
 def update_user(request, pk):
-    user = get_object_or_404(User, pk=pk)
+    user = get_object_or_404(User, pk=request.user.pk)
 
     if request.method == "POST":
         form = UserUpdateForm(request.POST, request.FILES, instance=user)
         if form.is_valid():
             user = form.save(commit=False)
             user.save()
-            form.save_m2m()  # Save many-to-many data for the form.
             return redirect(
-                "user-detail", pk=user.id
+                "user-detail",
             )  # Redirect to a user detail or other page
     else:
         form = UserUpdateForm(instance=user)

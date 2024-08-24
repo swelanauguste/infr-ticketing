@@ -66,7 +66,6 @@ class Ticket(models.Model):
     attachment = models.FileField(
         upload_to="ticket_attachments/", null=True, blank=True
     )
-    resolution = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.title
@@ -80,6 +79,7 @@ class Comment(models.Model):
         User, related_name="ticket_comments", on_delete=models.CASCADE
     )
     content = models.TextField()
+    the_fix = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

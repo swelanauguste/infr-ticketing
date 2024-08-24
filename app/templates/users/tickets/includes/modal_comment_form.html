@@ -1,0 +1,51 @@
+{% load crispy_forms_tags %}
+
+<!-- Button trigger modal -->
+<div class="text-end">
+  <a class="text-decoration-none"
+    href="#">
+    <span class="material-symbols-outlined fs-1 text-dark me-2"
+      data-bs-toggle="modal"
+      data-bs-target="#ticket-comment-form">
+      add_comment
+    </span>
+  </a>
+  <a class="text-decoration-none"
+    href="#">
+    <span class="material-symbols-outlined fs-1 text-dark me-2"
+      data-bs-toggle="modal"
+      data-bs-target="#ticket-comments">
+      comment
+    </span>
+  </a>
+  <a class="text-decoration-none"
+    href="#">
+    <span class="material-symbols-outlined fs-1 text-dark me-2"
+      data-bs-toggle="modal"
+      data-bs-target="#ticket-comments">
+      assignment_ind
+    </span>
+  </a>
+</div>
+<!-- Modal -->
+<div class="modal fade"
+  id="ticket-comment-form"
+  tabindex="-1"
+  aria-labelledby="ticket-comment-formLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-body">
+        <form method="post">
+          {% csrf_token %}
+          {{ comment_form|crispy }}
+          <div class="d-grid">
+            <button type="submit"
+              class="btn btn-dark">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

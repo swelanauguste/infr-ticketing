@@ -13,7 +13,7 @@ def ticket_created_email(ticket):
     domain = current_site.domain
 
     subject = f"{ticket.title}"
-    ticket_url = reverse("ticket-detail", kwargs={"pk": ticket.pk})
+    ticket_url = reverse("user-ticket-detail", kwargs={"pk": ticket.pk})
     full_url = f"http://{domain}{ticket_url}"
 
     html_message = render_to_string(
@@ -38,7 +38,7 @@ def ticket_assigned_email(ticket):
     domain = current_site.domain
 
     subject = f"{ticket.title}"
-    ticket_url = reverse("ticket-detail", kwargs={"pk": ticket.pk})
+    ticket_url = reverse("user-ticket-detail", kwargs={"pk": ticket.pk})
     full_url = f"http://{domain}{ticket_url}"
 
     html_message = render_to_string(

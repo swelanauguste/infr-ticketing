@@ -7,7 +7,7 @@ from .models import Category, Comment, Ticket
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ["content"]
+        fields = ["content", "the_fix"]
         widgets = {
             "content": forms.Textarea(
                 attrs={"rows": 3, "placeholder": "Add a comment..."}

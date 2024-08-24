@@ -5,62 +5,30 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<h2>{{ticket.title|title}}</h2>
+<br>
+<h2>{{ticket.title}}</h2>
 <hr>
 <div class="d-flex justify-content-between fw-bold">
-    <span>{{ticket.status|title}}</span>
-    <span>{{ticket.category|title}}</span>
+    <span>{{ticket.status|upper}}</span>
+    <span>{{ticket.category|upper}}</span>
 </div>
 <hr>
 <span>{{ticket.description}}</span><br>
 <span class="float-end">{{ticket.updated_at|naturaltime}}</span><br>
 <div>
     {% if ticket.assigned_to %}
-    <p>{{ticket.assigned_to}}</p>
+    <p><a href="">{{ticket.assigned_to}}</a></p>
     {% endif %}
     {% if ticket.attachment %}
     <p>Att: {{ticket.attachment}}</p>
     {% endif %}
-    {% if ticket.resolution %}
-    <p>{{ticket.resolution}}</p>
-    {% endif %}
-</div>
-<a class="float-end"
-    href=""><span class="material-symbols-outlined fs-1 fw-bold text-dark">
-        comment
-    </span></a><br>
-<hr>
-<form method="post">
-    {% csrf_token %}
-    {{ comment_form|crispy }}
-    <div class="d-grid">
-        <button type="submit"
-            class="btn btn-dark">Submit</button>
-    </div>
-</form>
 <hr>
 
-{% for comment in comments %}
-
-{% if comment.author == request.user %}
-<div class="text-end">
-    <span>{{ comment.content }}</span><br>
-    <span class="text-muted small">{{ comment.created_at|naturaltime }}</span>
-</div>
-<hr>
-{% else %}
-<div>
-    <span>{{ comment.content }}</span><br>
-    <span class="text-muted"><a href="">{{ comment.author.username }}</a> - 
-        {{ comment.created_at|naturaltime }}</span>
-</div>
-<hr>
-{% endif %}
-
-{% empty %}
-<p>No comments yet.</p>
-{% endfor %}
+{% include 'users/tickets/includes/modal_comment_form.html' %}
+{% include 'users/tickets/includes/modal_comments.html' %}
 
 
-<br>
+
+
+<br><br><br>
 {% endblock content %}

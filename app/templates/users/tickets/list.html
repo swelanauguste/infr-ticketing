@@ -9,7 +9,7 @@
 <a class="text-decoration-none text-dark"
     href="{% url 'user-ticket-detail' ticket.pk %}">
     <div class="p-4 shadow rounded-4 bg-light mb-2">
-        <span class="fw-bold">{{ticket|title}}</span><br>
+        <span class="fw-bold">{{ticket}}</span><br>
         <span>
             {{ticket.description|truncatechars:100}}</span><br>
         <span class="text-end text-muted small">{{ticket.updated_at|naturaltime}}</span>

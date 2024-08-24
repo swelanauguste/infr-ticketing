@@ -172,8 +172,8 @@ ADMINS = [
 ]
 
 if DEBUG:
-    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-    # EMAIL_FILE_PATH = "emails"
+    EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+    EMAIL_FILE_PATH = "emails"
 else:
     EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
     EMAIL_HOST = "mail.govt.lc"
@@ -184,7 +184,7 @@ else:
     # EMAIL_USE_SSL = False
     DEFAULT_FROM_EMAIL = "ict.infrastructure@govt.lc"
 
-#  Crispy forms settings
+# Crispy forms settings
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 

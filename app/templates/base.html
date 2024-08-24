@@ -31,12 +31,12 @@
         href="{% static 'css/styles.css' %}">
 </head>
 
-<body class="">
+<body class="small">
     <div class="col-lg-3 mx-auto min-vh-100 shadow">
         {% include 'top_banner.html' %}
 
         <div class="container pt-2 pb-5 bg-info bg-opacity-50 min-vh-100">
-
+            {% include 'messages.html' %}
 
             {% block content %}
 
