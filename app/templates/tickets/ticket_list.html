@@ -4,21 +4,21 @@
 
 
 {% block content %}
-
 {% for ticket in tickets %}
-<a class="text-decoration-none text-dark"
-    href="{% url 'ticket_detail' ticket.pk %}">
-    <div class="p-4 shadow rounded-4 bg-light mb-2">
-        <div class="d-flex justify-content-between">
-            <p class="fw-bold">{{ticket}}</p>
-            <p class="fw-bold">{{ticket.priority|upper}}</p>
+<div class="mt-2">
+    <a class="text-decoration-none text-dark"
+        href="{% url 'ticket-support-detail' ticket.pk %}">
+        <div class="p-4 shadow rounded-4 bg-light mb-2">
+            <div class="d-flex justify-content-between">
+                <p class="fw-bold">{{ticket}}</p>
+                <p class="fw-bold">{{ticket.priority|upper}}</p>
+            </div>
+            <p>
+                {{ticket.description|truncatechars:48}}</p>
+            <p class="text-end text-muted small">{{ticket.updated_at}}</p>
         </div>
-        <p>
-            {{ticket.description|truncatechars:48}}</p>
-        <p class="text-end text-muted small">{{ticket.updated_at}}</p>
-    </div>
-</a>
-
+    </a>
+</div>
 {% endfor %}
 
 {% endblock content %}

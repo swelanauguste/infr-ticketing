@@ -1,8 +1,7 @@
 {% if messages %}
-<div>
+<div id="message-alert">
     {% for message in messages %}
-    <div
-        class="alert alert-info alert-dismissible fade show bg-info text-dark  text-center fw-bold"
+    <div class="alert alert-warning alert-dismissible fade show bg-warning text-dark text-center fw-bold"
         role="alert">
         <strong class="">{{ message }}</strong>
         <button type="button"

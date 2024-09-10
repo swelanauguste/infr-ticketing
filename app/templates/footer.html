@@ -1,27 +1,48 @@
 {% if request.user.is_authenticated %}
+<div class="fixed-bottom bg-warning px-3 mx-auto">
+    <div class="col-lg-4 mx-auto">
 
-<div class="fixed-bottom bg-warning mt-5 px-3 col-lg-3 mx-auto">
-    <div class="d-flex justify-content-between px-5 py-2">
-        <span onclick="history.back()"
-            class="material-symbols-outlined fs-1 text-dark">
-            arrow_back_ios
-        </span>
+        <div class="d-flex justify-content-between px-4 py-2">
+            <a href="#">
+                <span onclick="history.back()"
+                    class="material-symbols-outlined fs-1 fw-bold text-dark">
+                    arrow_back_ios
+                </span>
+            </a>
 
-        <a class="text-dark"
-            href="{% url 'user-ticket-list' %}">
-            <span class="material-symbols-outlined fs-1">
-                home
-            </span>
-        </a>
-        
-        <a class="text-dark"
-            href="{% url 'ticket-create' %}">
-            <span class="material-symbols-outlined fs-1">
-                add_circle
-            </span>
-        </a>
+            {% if request.user.role != 'customer' %}
 
+            <a class="text-dark"
+                href="{% url 'ticket-list-assigned' %}">
+                <span class="material-symbols-outlined fs-1 fw-bold">
+                    home
+                </span>
+            </a>
+            <a href="{% url 'ticket-list' %}">
+                <span class="material-symbols-outlined fs-1 fw-bold text-dark">
+                    book_online
+                </span>
+            </a>
+
+            {% else %}
+            <a class="text-dark"
+                href="{% url 'ticket-list-user' %}">
+                <span class="material-symbols-outlined fs-1 fw-bold">
+                    home
+                </span>
+            </a>
+
+            {% endif %}
+
+
+
+            <a class="text-dark"
+                href="{% url 'ticket-create' %}">
+                <span class="material-symbols-outlined fs-1 fw-bold">
+                    add_circle
+                </span>
+            </a>
+        </div>
     </div>
-    <br>
 </div>
 {% endif %}

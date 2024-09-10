@@ -17,9 +17,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-+_zqzm&yg2n#u)#u@w0&=ft^91kv%m#krd#*%$n(a!a@q2$-$n"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = bool(int(os.environ.get("DEBUG", default=0)))
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", '*']
 
 
 # Application definition
@@ -33,9 +33,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sites",
     "django.contrib.humanize",
-    "allauth",
-    "allauth.account",
-    "allauth.socialaccount",
     "crispy_forms",
     "crispy_bootstrap5",
     "pwa",
@@ -52,7 +49,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = "cf.urls"
@@ -145,11 +141,11 @@ MEDIA_ROOT = BASE_DIR / "mediafiles"
 # Custom user model
 AUTH_USER_MODEL = "users.User"
 
-# Allauth settings
 AUTHENTICATION_BACKENDS = [
+    "users.backends.EmailBackend",
     "django.contrib.auth.backends.ModelBackend",
-    "allauth.account.auth_backends.AuthenticationBackend",
 ]
+PASSWORD_RESET_TIMEOUT = 3600
 
 SITE_ID = 1
 
@@ -163,8 +159,8 @@ ACCOUNT_LOGOUT_REDIRECT_URL = "/accounts/login/"
 
 # Redirect URLs
 LOGIN_REDIRECT_URL = "/"
-LOGIN_URL = "/accounts/login/"
-LOGOUT_URL = "/accounts/login/"
+LOGIN_URL = "/users/login/"
+LOGOUT_URL = "/users/login/"
 
 # Email settings
 ADMINS = [

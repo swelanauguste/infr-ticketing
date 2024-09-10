@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% load humanize %}
+
+{% block content %}
+<div class="d-flex py-2 justify-content-end">
+    <a href="">
+        <span class="material-symbols-outlined fs-1 fw-bold text-dark">
+            book_online
+        </span>
+    </a>
+</div>
+{% for ticket in tickets %}
+<a class="text-decoration-none text-dark"
+    href="{% url 'ticket-detail-user' ticket.pk %}">
+    <div class="p-4 shadow rounded-4 bg-light mb-2">
+        <span class="fw-bold">{{ticket}}</span><br>
+        <span>
+            {{ticket.description|truncatechars:100}}</span><br>
+        <span
+            class="text-end text-muted small">{{ticket.updated_at|naturaltime}}</span>
+    </div>
+</a>
+{% empty %}
+<p class="text-center fw-bold pt-3">No tickets</p>
+<p class="text-center"><a class="text-dark"
+        href="{% url 'ticket-create' %}">add a ticket</a></p>
+{% endfor %}
+{% endblock content %}

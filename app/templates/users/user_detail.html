@@ -4,13 +4,13 @@
 {% block content %}
 <div class="d-flex justify-content-between pt-3">
     <a class="text-dark me-3 text-decoration-none"
-        href="{% url 'user-update' request.user.id %}">
+        href="{% url 'user-update' %}">
         <span class="material-symbols-outlined fs-1">
             edit
         </span>
     </a>
     <a class="text-dark"
-        href="{% url 'account_logout' %}">
+        href="{% url 'logout' %}">
         <span class="material-symbols-outlined fs-1">
             logout
         </span>
@@ -39,13 +39,8 @@
     <p><a class="text-dark"
             href="tel:{{user.phone}}">{{user.phone|default:'ext'}}</a></p>
     {% endif %}
-
-
 </div>
-<hr>
-<div>
 
-</div>
 
 
 {% endblock content %}

@@ -28,6 +28,8 @@ class Ticket(models.Model):
     )
     title = models.CharField(max_length=200)
     description = models.TextField()
+    cause = models.TextField(null=True, blank=True)
+    fix = models.TextField(null=True, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="open")
     priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES, default="low")
     created_at = models.DateTimeField(auto_now_add=True)
@@ -79,7 +81,7 @@ class Comment(models.Model):
         User, related_name="ticket_comments", on_delete=models.CASCADE
     )
     content = models.TextField()
-    the_fix = models.BooleanField(default=False)
+    # the_fix = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% load humanize %}
+
+{% block content %}
+<h1>{{ticket}}</h1>
+<br>
+
+<form method="post"
+    enctype="multipart/form-data">
+    <p><strong>Description: </strong>{{ticket.description}}</p>
+    <p><strong>Owner: </strong>{{ticket.created_by}} <span
+            class="text-muted small">{{ticket.created_at|naturaltime}}</span>
+    </p>
+    <hr>
+    {% csrf_token %}
+    {{ form|crispy }}
+    <br>
+    <button type="submit">Update Ticket</button>
+</form>
+<hr>
+
+<h2>Comments</h2>
+{% for comment in ticket.comments.all %}
+{% if comment.author == request.user %}
+<div class="text-end p-2 ms-5 mb-1 rouned-3 border-top border-dark">
+    <span class="fw-bold borer-bottom border-dark">
+        {{ comment.content }}</span><br>
+    <span class="text-muted small">
+        {{ comment.created_at|naturaltime }}</span>
+</div>
+{% else %}
+<div class="text-start p-2 me-5 mb-1 rouded-3 border-top border-dark">
+    <div class="">
+        <span class="fw-bold">{{ comment.content }}</span><br>
+        <span class="text-muted small"><a href="">
+                {{ comment.author|lower }}</a> -
+            {{ comment.created_at|naturaltime }}</span>
+    </div>
+</div>
+{% endif %}
+{% empty %}
+<p>No comments yet.</p>
+<p>{{comment}}</p>
+{% endfor %}
+
+{% endblock %}

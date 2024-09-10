@@ -3,14 +3,14 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<form method="post" enctype="multipart/form-data">
+<h1 class="text-center display-4 fw-bold">New ticket</h1>
+<br>
+<form method="post"
+    enctype="multipart/form-data">
     {% csrf_token %}
     {{form|crispy}}
     <br>
-    <div class="d-grid">
-        <input class="btn btn-dark"
-            type="submit"
-            value="Create">
-    </div>
+    <button type="submit"
+        name="submit">Submit</button>
 </form>
 {% endblock content %}
