@@ -14,7 +14,7 @@ from .forms import (
     TicketUpdateForm,
 )
 from .models import Ticket, TicketAssignment
-from .tasks import ticket_add_comment_email, ticket_assigned_email, ticket_created_email
+from .tasks import ticket_add_comment_email, ticket_assigned_email, ticket_created_email, ticket_resolved_email
 
 
 @login_required
@@ -111,6 +111,7 @@ def ticket_detail(request, slug):
             solution.ticket = ticket  # Link the solution to the ticket
             solution.created_by = request.user  # Set the created_by of the solution
             solution.save()
+            ticket_resolved_email.after_response(ticket, solution)
             messages.success(request, "Solution has been added successfully!")
             return redirect("ticket-detail", slug=ticket.slug)
 

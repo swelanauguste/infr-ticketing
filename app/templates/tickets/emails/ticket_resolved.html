@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+    <title>Ticket Resolved</title>
+</head>
+
+<body>
+    <h2>Ticket: {{ ticket.ref|upper }} Resolved</h2>
+    <p>{{ ticket.created_by }},</p>
+    <p>Your ticket has been resolved. Here are the details:</p>
+
+    <p><strong>Ticket REF#:</strong> {{ ticket.ref|upper }}</p>
+    <p><strong>Description:</strong> {{ solution.solution }}</p>
+
+    <p>You can view the details of the ticket by clicking on the following
+        link:</p>
+
+    <p><a href="{{full_url}}">View Ticket</a></p>
+
+    <p>Thank you for using our ticketing system.</p>
+
+    <p>Best regards,
+        <br>Your Support Team
+    </p>
+</body>
+
+</html>
+
