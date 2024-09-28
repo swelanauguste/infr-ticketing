@@ -1,42 +1,85 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 
 {% load humanize %}
 
-{% load user_role_filters %}
-
-
 {% block content %}
-<h2>{{ticket.title}}</h2>
-<hr>
-<p>{{ticket.description}}</p>
-<p class="text-end fw-bold">{{ticket.category|title}}</p>
-
-<hr>
-<p>Status/Priority: {{ticket.status|title}}/{{ticket.priority|title}}</p>
-<p>Assigned to: {{ticket.assigned_to}}</p>
-<p>Att: {{ticket.attachment}}</p>
-<p>Fix: {{ticket.resolution}}</p>
-<p>tags:
-    {% for tag in ticket.tags.all %}
-    <a href="">{{tag}},</a>
-    {% endfor %}
+<h1>{{ticket}}</h1>
+<br>
+<p><strong>Description: </strong>{{ticket.description}}</p>
+<p><strong>Owner: </strong>{{ticket.created_by}} <span
+        class="text-muted small">{{ticket.created_at|naturaltime}}</span>
 </p>
-<p title="created"
-    class="text-end text-muted small"><a class="text-muted"
-        href="">{{ticket.created_by.first_name}}</a>
-    {{ticket.created_at|naturaltime}}</p>
-<hr>
-
-
-{% if request.user|has_role:"tech" or request.user|has_role:"manager" %}
-    <a href="{% url 'ticket_support_detail' ticket.pk %}">Update</a>
+{% if ticket.assigned_tickets.first %}
+<p><strong>Assigned to: </strong><a
+        href="">{{ticket.assigned_tickets.first.assign_to}}</a></p>
+{% endif %}
+{% if ticket.attachment %}
+<p>Att: <a target="_blank" href="{{ticket.attachment.url}}">{{ticket.attachment.name}}</a></p>
 {% endif %}
 
-    
+{% if ticket.solutions.first %}
+<p><strong>Cause:</strong> {{ticket.solutions.first.cause}}</p>
+<p><strong>Solution:</strong> {{ticket.solutions.first.solution}}</p>
+{% endif %}
 
-    
 
-{% endblock content %}
+<hr>
+{% if request.user.role != 'customer' %}
 
 
-    
+<form method="post">
+    {% csrf_token %}
+    <div class="col">
+        {{form.category}}
+    </div>
+    <br>
+    <div class="row">
+        <div class="col">
+            {{form.status}}
+        </div>
+        <div class="col">
+            {{form.priority}}
+        </div>
+    </div>
+</form>
+<br>
+<form method="post"
+    action="{% url 'ticket-assign' ticket.slug %}">
+    {% csrf_token %}
+    {{ ticket_assign_form.assign_to }}
+</form>
+<br>
+{% include 'tickets/users/includes/modal_solution_form.html' %}
+{% endif %}
+
+<br>
+
+<h2 class="text-center">Comments</h2>
+<hr>
+{% include 'tickets/users/includes/modal_comment_form.html' %}
+
+{% for comment in ticket.comments.all %}
+{% if comment.created_by == request.user %}
+<div class="text-end p-2 ms-5 mb-1">
+    <span class="small">
+        {{ comment.comment }}</span><br>
+    <p class="small"><span class="text-muted small">
+            {{ comment.created_at|naturaltime }}</span></p>
+</div>
+{% else %}
+<div class="text-start p-2 me-5 mb-1">
+    <div class="">
+        <span class="small">{{ comment.comment }}</span><br>
+        <p class="small"><span class="text-muted small"><a href="">
+                    {{ comment.created_by|lower }}</a> -
+                {{ comment.created_at|naturaltime }}</span></p>
+    </div>
+</div>
+{% endif %}
+{% empty %}
+<p>No comments yet.</p>
+<p>{{comment}}</p>
+{% endfor %}
+<br>
+{% endblock %}

@@ -9,11 +9,11 @@
 </head>
 
 <body>
-    <h2>New Ticket: {{ ticket.id }} Created</h2>
+    <h2>New Ticket: {{ ticket.ref|upper }} Created</h2>
     <p>{{ ticket.created_by }},</p>
     <p>A new ticket has been created. Here are the details:</p>
 
-    <p><strong>Ticket ID:</strong> {{ ticket.id }}</p>
+    <p><strong>Ticket REF#:</strong> {{ ticket.ref|upper }}</p>
     <p><strong>Description:</strong> {{ ticket.description }}</p>
 
     <p>You can view the details of the ticket by clicking on the following

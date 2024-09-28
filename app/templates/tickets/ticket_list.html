@@ -7,7 +7,7 @@
 {% for ticket in tickets %}
 <div class="mt-2">
     <a class="text-decoration-none text-dark"
-        href="{% url 'ticket-support-detail' ticket.pk %}">
+        href="{% url 'ticket-detail' ticket.slug %}">
         <div class="p-4 shadow rounded-4 bg-light mb-2">
             <div class="d-flex justify-content-between">
                 <p class="fw-bold">{{ticket}}</p>
@@ -19,6 +19,10 @@
         </div>
     </a>
 </div>
+{% empty %}
+<p class="text-center fw-bold pt-3">No assigned tickets</p>
+<p class="text-center"><a class="text-dark"
+        href="{% url 'ticket-create' %}">add a ticket</a></p>
 {% endfor %}
 
 {% endblock content %}

@@ -19,7 +19,9 @@ SECRET_KEY = "django-insecure-+_zqzm&yg2n#u)#u@w0&=ft^91kv%m#krd#*%$n(a!a@q2$-$n
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(int(os.environ.get("DEBUG", default=0)))
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", '*']
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS").split(" ")
+
+CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS").split(" ")
 
 
 # Application definition
@@ -75,13 +77,25 @@ WSGI_APPLICATION = "cf.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
 
+if DEBUG:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.sqlite3"),
+            "NAME": os.environ.get("SQL_DATABASE", BASE_DIR / "db.sqlite3"),
+            "USER": os.environ.get("SQL_USER", "user"),
+            "PASSWORD": os.environ.get("SQL_PASSWORD", "password"),
+            "HOST": os.environ.get("SQL_HOST", "localhost"),
+            "PORT": os.environ.get("SQL_PORT", "5432"),
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -145,17 +159,10 @@ AUTHENTICATION_BACKENDS = [
     "users.backends.EmailBackend",
     "django.contrib.auth.backends.ModelBackend",
 ]
+
 PASSWORD_RESET_TIMEOUT = 3600
 
 SITE_ID = 1
-
-ACCOUNT_CONFIRM_EMAIL_ON_GET = True
-ACCOUNT_AUTHENTICATION_METHOD = "username_email"
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
-ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = True
-ACCOUNT_SIGNUP_EMAIL_ENTER_TWICE = True
-ACCOUNT_LOGOUT_REDIRECT_URL = "/accounts/login/"
 
 # Redirect URLs
 LOGIN_REDIRECT_URL = "/"
@@ -166,6 +173,8 @@ LOGOUT_URL = "/users/login/"
 ADMINS = [
     ("ticketing system", "ict.infrastructure@govt.lc"),
 ]
+
+DEFAULT_FROM_EMAIL = "ict.infrastructure@govt.lc"
 
 if DEBUG:
     EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
@@ -178,52 +187,51 @@ else:
     EMAIL_PORT = 587
     EMAIL_USE_TLS = True
     # EMAIL_USE_SSL = False
-    DEFAULT_FROM_EMAIL = "ict.infrastructure@govt.lc"
+
+
+    # Logging settings
+    LOGGING = {
+        "version": 1,
+        "disable_existing_loggers": False,
+        "formatters": {
+            "verbose": {
+                "format": "{levelname}, {asctime}, {module}, {process:d}, {thread:d}, {message}",
+                "style": "{",
+            },
+            "simple": {
+                "format": "{levelname} {message}",
+                "style": "{",
+            },
+        },
+        "handlers": {
+            "file": {
+                "level": "WARNING",
+                "class": "logging.FileHandler",
+                "filename": BASE_DIR / "debug/debug.log",
+                "formatter": "verbose",
+            },
+            "mail_admins": {
+                "level": "ERROR",
+                "class": "django.utils.log.AdminEmailHandler",
+                "formatter": "verbose",
+            },
+        },
+        "loggers": {
+            "django": {
+                "handlers": ["file", "mail_admins"],
+                "level": "WARNING",
+                "propagate": True,
+            },
+        },
+    }
 
 # Crispy forms settings
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
-# Logging settings
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "verbose": {
-            "format": "{levelname}, {asctime}, {module}, {process:d}, {thread:d}, {message}",
-            "style": "{",
-        },
-        "simple": {
-            "format": "{levelname} {message}",
-            "style": "{",
-        },
-    },
-    "handlers": {
-        "file": {
-            "level": "WARNING",
-            "class": "logging.FileHandler",
-            "filename": BASE_DIR / "debug/debug.log",
-            "formatter": "verbose",
-        },
-        "mail_admins": {
-            "level": "ERROR",
-            "class": "django.utils.log.AdminEmailHandler",
-            "formatter": "verbose",
-        },
-    },
-    "loggers": {
-        "django": {
-            "handlers": ["file", "mail_admins"],
-            "level": "WARNING",
-            "propagate": True,
-        },
-    },
-}
-
-
 # PWA settings
-PWA_APP_NAME = "INFR-Tickets"
-PWA_APP_DESCRIPTION = "Ticketing system for the ICT Unit"
+PWA_APP_NAME = "Tickets"
+PWA_APP_DESCRIPTION = "Ticketing system for the IT Unit"
 PWA_APP_THEME_COLOR = "#0A0302"
 PWA_APP_BACKGROUND_COLOR = "#ffffff"
 PWA_APP_DISPLAY = "standalone"

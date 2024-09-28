@@ -5,13 +5,14 @@ from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.sites.models import Site
+from django.db import IntegrityError
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
 from django.views.generic import DetailView, UpdateView
 from users.models import User
 
-from .forms import UserUpdateForm, UserCustomCreationForm
+from .forms import UserCustomCreationForm, UserUpdateForm
 from .models import User
 from .tasks import user_registration_email
 from .tokens import account_activation_token
@@ -44,53 +45,32 @@ def activate(request, uidb64, token):
 def user_registration_view(request):
     current_site = Site.objects.get_current()
     domain = current_site.domain
+
     if request.method == "POST":
         form = UserCustomCreationForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)
-            user.is_active = False
-            user.save()
-            user_registration_email.after_response(
-                request, user, form.cleaned_data["email"]
-            )
-            # user_registration_email(request, user, form.cleaned_data.get("email"))
-            return redirect("login")
+            try:
+                user = form.save(commit=False)
+                user.is_active = False
+                user.save()
+                user_registration_email.after_response(
+                    request, user, form.cleaned_data["email"]
+                )
+                # user_registration_email(request, user, form.cleaned_data.get("email"))
+                return redirect("login")
+            except IntegrityError:
+                # username = form.cleaned_data["username"]
+                form.add_error(
+                    None,
+                    f"A user with the username already exists. Please try a different email address.",
+                )
+        else:
+            # Handle form errors
+            form.add_error(None, "Please correct the errors below.")
     else:
         form = UserCustomCreationForm()
     return render(request, "users/register.html", {"form": form})
 
-
-# @login_required
-# def ticket_detail(request, pk):
-#     ticket = get_object_or_404(Ticket, pk=pk)
-#     comments = ticket.comments.all().order_by("-created_at")
-#     if request.method == "POST":
-#         comment_form = CommentForm(request.POST)
-#         if comment_form.is_valid():
-#             comment = comment_form.save(commit=False)
-#             comment.ticket = ticket
-#             comment.author = request.user
-#             comment.save()
-#             messages.success(request, "Comment added successfully.")
-#             return redirect("user-ticket-detail", pk=ticket.pk)
-#     else:
-#         comment_form = CommentForm()
-#     context = {
-#         "ticket": ticket,
-#         "comments": comments,
-#         "comment_form": comment_form,
-#     }
-#     return render(request, "users/tickets/detail.html", context)
-
-
-# @login_required
-# def user_ticket_list(request):
-#     tickets = (
-#         Ticket.objects.filter(created_by=request.user)
-#         .exclude(status="closed")
-#         .order_by("-created_at")[:10]
-#     )
-#     return render(request, "users/tickets/list.html", {"tickets": tickets})
 
 
 @login_required
@@ -113,9 +93,5 @@ def user_update(request):
 
 @login_required
 def user_detail(request):
-    if request.user.role == "admin" or request.user.role == "agent":
-        user = get_object_or_404(User, pk=request.user.id)
-    else:
-        user = get_object_or_404(User, pk=request.user.id)
-    return render(request, "users/user_detail.html", {"user": user})
+    user = get_object_or_404(User, pk=request.user.id)
     return render(request, "users/user_detail.html", {"user": user})

@@ -6,17 +6,18 @@
     href="#">
     <span class="material-symbols-outlined fs-1 text-dark me-2"
       data-bs-toggle="modal"
-      data-bs-target="#ticket-comment-form">
-      add_comment
+      data-bs-target="#solution-comment-form">
+      home_repair_service
     </span>
   </a>
+
 
 </div>
 <!-- Modal -->
 <div class="modal fade"
-  id="ticket-comment-form"
+  id="solution-comment-form"
   tabindex="-1"
-  aria-labelledby="ticket-comment-formLabel"
+  aria-labelledby="solution-comment-formLabel"
   aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -25,7 +26,8 @@
         <hr>
         <form method="post">
           {% csrf_token %}
-          {{ comment_form|crispy }}
+          {{ solution_form|crispy }}
+          <br>
           <div class="d-grid">
             <button type="submit"
               class="btn btn-dark">Submit</button>

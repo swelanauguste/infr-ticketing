@@ -10,6 +10,8 @@
     {% csrf_token %}
     {{form|crispy}}
     <br>
-    <button type="submit">Submit</button>
+    <div class="d-grid">
+        <button type="submit">Submit</button>
+    </div>
 </form>
 {% endblock content %}

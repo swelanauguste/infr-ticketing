@@ -3,16 +3,17 @@
 {% load humanize %}
 
 {% block content %}
-<div class="d-flex py-2 justify-content-end">
+<!-- <div class="d-flex py-2 justify-content-end">
     <a href="">
         <span class="material-symbols-outlined fs-1 fw-bold text-dark">
             book_online
         </span>
     </a>
-</div>
+</div> -->
+<br>
 {% for ticket in tickets %}
 <a class="text-decoration-none text-dark"
-    href="{% url 'ticket-detail-user' ticket.pk %}">
+    href="{% url 'ticket-detail' ticket.slug %}">
     <div class="p-4 shadow rounded-4 bg-light mb-2">
         <span class="fw-bold">{{ticket}}</span><br>
         <span>

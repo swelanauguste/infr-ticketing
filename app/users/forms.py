@@ -16,7 +16,7 @@ class UserUpdateForm(forms.ModelForm):
 
 
 class UserCustomCreationForm(UserCreationForm):
-    allowed_domains = ["goslnet.gov.lc", "govt.lc"]
+    allowed_domains = ["goslnet.gov.lc", "govt.lc", "gmail.com"]
 
     usable_password = None
 
@@ -27,7 +27,11 @@ class UserCustomCreationForm(UserCreationForm):
     def clean_email(self):
         email = self.cleaned_data.get("email")
         domain = email.split("@")[-1]
-
+        
+        if User.objects.filter(email=email).exists():
+                raise forms.ValidationError(
+                    f"The email '{email}' is already taken. Please use a different email."
+                )
         # Validate email domain
         if domain not in self.allowed_domains:
             raise forms.ValidationError(

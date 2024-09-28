@@ -41,7 +41,7 @@
 
     {% include 'top_banner.html' %}
 
-    <div class="my-5 py-3">
+    <div class="my-5 py-5">
         {% block content %}
 
         {% endblock content %}
@@ -50,6 +50,7 @@
     <script>
         $('button[type="submit"]').addClass('btn btn-dark rounded-pill px-5');
         $('input[type="text"]').addClass('rounded-pill');
+        $('input[type="password"]').addClass('rounded-pill');
         $('input[type="email"]').addClass('rounded-pill');
         $('input[type="file"]').addClass('rounded-pill');
         $('select').addClass('form-control rounded-pill');

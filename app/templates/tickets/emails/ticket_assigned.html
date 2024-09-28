@@ -5,21 +5,21 @@
     <meta charset="UTF-8">
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0">
-    <title>New Ticket Created</title>
+    <title>Ticket Assigned</title>
 </head>
 
 <body>
-    <h2>New Ticket: {{ ticket.id }} Created</h2>
+    <h2>Ticket Assigned: {{ ticket.ref|upper }}</h2>
     <p>{{ ticket.created_by }},</p>
-    <p>Your ticket has been assigned</p>
+    <p>This ticket has been assigned</p>
 
-    <p><strong>Ticket ID:</strong> {{ ticket.id }}</p>
+    <p><strong>Ticket Ref#:</strong> {{ ticket.ref|upper }}</p>
     <p><strong>Description:</strong> {{ ticket.description }}</p>
 
     <p>You can view the details of the ticket by clicking on the following
         link:</p>
 
-    <p><a href="{{full_url}}">View Ticket</a></p>
+    <p><a href="{{full_ticket_url}}">View Ticket</a></p>
 
     <p>Thank you for using our ticketing system.</p>
 

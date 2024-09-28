@@ -1,5 +1,8 @@
 from django.db import models
+from django.utils.text import slugify
 from users.models import User
+
+from .tasks import generate_short_id
 
 
 class Category(models.Model):
@@ -16,9 +19,8 @@ class Category(models.Model):
 class Ticket(models.Model):
     STATUS_CHOICES = (
         ("open", "Open"),
-        ("in_progress", "In Progress"),
+        ("on_hold", "On Hold"),
         ("resolved", "Resolved"),
-        ("closed", "Closed"),
     )
     PRIORITY_CHOICES = (
         ("low", "Low"),
@@ -26,10 +28,12 @@ class Ticket(models.Model):
         ("high", "High"),
         ("urgent", "Urgent"),
     )
+    ref = models.CharField(
+        max_length=8, unique=True, default=generate_short_id, editable=False, null=True
+    )
     title = models.CharField(max_length=200)
+    slug = models.SlugField(max_length=200, unique=True, null=True, blank=True)
     description = models.TextField()
-    cause = models.TextField(null=True, blank=True)
-    fix = models.TextField(null=True, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="open")
     priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES, default="low")
     created_at = models.DateTimeField(auto_now_add=True)
@@ -48,20 +52,7 @@ class Ticket(models.Model):
         null=True,
         blank=True,
     )
-    assigned_to = models.ForeignKey(
-        User,
-        related_name="tickets_assigned",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-    )
-    assigned_by = models.ForeignKey(
-        User,
-        related_name="tickets_assigned_by",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-    )
+    
     category = models.ForeignKey(
         Category, on_delete=models.SET_NULL, null=True, blank=True
     )
@@ -69,20 +60,61 @@ class Ticket(models.Model):
         upload_to="ticket_attachments/", null=True, blank=True
     )
 
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.ref)
+        super(Ticket, self).save(*args, **kwargs)
+        
+    class Meta:
+        ordering = ["-created_at"]
+
     def __str__(self):
         return self.title
+
+
+class TicketAssignment(models.Model):
+    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name="assigned_tickets")
+    assign_to = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(
+        User, on_delete=models.CASCADE, null=True, related_name="+"
+    )
+    
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"Ticket {self.ticket.title} assigned to {self.assigned_to.username}"
+
+
+class TicketSolution(models.Model):
+    ticket = models.ForeignKey(
+        Ticket, on_delete=models.CASCADE, related_name="solutions"
+    )
+    cause = models.TextField()
+    solution = models.TextField()
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"Solution for {self.ticket.title}"
 
 
 class Comment(models.Model):
     ticket = models.ForeignKey(
         Ticket, related_name="comments", on_delete=models.CASCADE
     )
-    author = models.ForeignKey(
+    created_by = models.ForeignKey(
         User, related_name="ticket_comments", on_delete=models.CASCADE
     )
-    content = models.TextField()
+    comment = models.TextField()
     # the_fix = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ["-created_at"]
 
     def __str__(self):
-        return f"Comment by {self.author.username} on {self.ticket.title}"
+        return f"Comment by {self.created_by.username} on {self.ticket.title}"

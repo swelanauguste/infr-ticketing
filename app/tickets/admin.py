@@ -1,10 +1,12 @@
 from django.contrib import admin
 from users.models import User
 
-from .models import Category, Comment, Ticket
+from .models import Category, Comment, Ticket, TicketAssignment, TicketSolution
 
 admin.site.register(Category)
 admin.site.register(Comment)
+admin.site.register(TicketSolution)
+admin.site.register(TicketAssignment)
 
 
 class TicketAdmin(admin.ModelAdmin):
@@ -18,10 +20,14 @@ class TicketAdmin(admin.ModelAdmin):
         "category",
         "created_at",
         "created_by",
-        "assigned_to",
     ]
-    list_editable = ["category", "assigned_to"]
-    list_filter = ["category", "created_by", "assigned_to"]
+    list_editable = [
+        "category",
+    ]
+    list_filter = [
+        "category",
+        "created_by",
+    ]
 
 
 admin.site.register(Ticket, TicketAdmin)
