@@ -1,6 +1,6 @@
 {% if request.user.is_authenticated %}
 <div class="fixed-top d-flex justify-content-center px-5 align-items-center text-bg-warning py-2">
-    <p class="display-5 mx-5">{{request.user}}</p>
+
     <div class="mx-lg-5">
         <a class="text-white"
             href="{% url 'user-detail' %}">

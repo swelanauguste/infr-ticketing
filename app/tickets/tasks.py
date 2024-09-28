@@ -23,7 +23,7 @@ def ticket_resolved_email(ticket, solution):
 
     subject = f"{ticket.title}"
     ticket_url = reverse("ticket-detail", kwargs={"slug": ticket.slug})
-    full_url = f"http://{domain}{ticket_url}"
+    full_url = f"https://{domain}{ticket_url}"
 
     html_message = render_to_string(
         "tickets/emails/ticket_resolved.html", {"ticket": ticket, "full_url": full_url, "solution": solution}
@@ -49,7 +49,7 @@ def ticket_created_email(ticket):
 
     subject = f"{ticket.title}"
     ticket_url = reverse("ticket-detail", kwargs={"slug": ticket.slug})
-    full_url = f"http://{domain}{ticket_url}"
+    full_url = f"https://{domain}{ticket_url}"
 
     html_message = render_to_string(
         "tickets/emails/ticket_create.html", {"ticket": ticket, "full_url": full_url}
@@ -75,7 +75,7 @@ def ticket_assigned_email(ticket):
     subject = f"Ticket Assigned {ticket.ref.upper()}"
 
     ticket_url = reverse("ticket-detail", kwargs={"slug": ticket.slug})
-    full_ticket_url = f"http://{domain}{ticket_url}"
+    full_ticket_url = f"https://{domain}{ticket_url}"
 
     html_message = render_to_string(
         "tickets/emails/ticket_assigned.html",
@@ -103,7 +103,7 @@ def ticket_add_comment_email(ticket, comment):
 
     subject = f"{ticket.title}"
     ticket_url = reverse("ticket-detail", kwargs={"slug": ticket.slug})
-    full_url = f"http://{domain}{ticket_url}"
+    full_url = f"https://{domain}{ticket_url}"
 
     html_message = render_to_string(
         "tickets/emails/ticket_add_comment.html",
