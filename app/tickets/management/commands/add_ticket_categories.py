@@ -13,14 +13,9 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        file_path = options['file']
-        
-        if not file_path:
-            self.stdout.write(self.style.ERROR('Please provide the path to the CSV file using --file'))
-            return
 
         try:
-            with open(file_path, 'r') as file:
+            with open('./static/docs/ticket_categories.csv', 'r') as file:
                 reader = csv.DictReader(file)
                 for row in reader:
                     name = row['name'].strip()
