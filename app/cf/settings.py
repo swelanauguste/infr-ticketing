@@ -181,14 +181,14 @@ if DEBUG:
     EMAIL_FILE_PATH = "emails"
 else:
     EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-    EMAIL_HOST = "mail.govt.lc"
-    EMAIL_HOST_USER = "ict.infrastructure@govt.lc"
+    EMAIL_HOST = os.environ.get("HOST")
+    EMAIL_HOST_USER = os.environ.get("EMAIL")
     EMAIL_HOST_PASSWORD = os.environ.get("PASS")
     EMAIL_PORT = 587
     EMAIL_USE_TLS = True
     # EMAIL_USE_SSL = False
 
-
+if DEBUG == False:
     # Logging settings
     LOGGING = {
         "version": 1,

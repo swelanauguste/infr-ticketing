@@ -5,7 +5,7 @@ from django.db.models import OuterRef, Subquery
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from users.models import User
-
+import threading
 from .forms import (
     CommentForm,
     TicketAssignmentForm,
@@ -60,7 +60,10 @@ def ticket_assign_view(request, slug):
                 request,
                 "Ticket has been assigned to {} successfully!".format(assign_to),
             )
-            ticket_assigned_email.after_response(ticket)
+            # ticket_assigned_email.after_response(ticket)
+            assign_email_thread = threading.Thread(target=ticket_assigned_email, args=ticket)
+            assign_email_thread.start()
+            
             # Redirect back to the complaint detail page or the page you want
             return redirect(
                 reverse_lazy("ticket-detail", kwargs={"slug": slug})
@@ -102,7 +105,9 @@ def ticket_detail(request, slug):
             comment.created_by = request.user  # Set the created_by of the comment
             comment.save()
             messages.success(request, "Comment has been added successfully!")
-            ticket_add_comment_email.after_response(ticket, comment)
+            # ticket_add_comment_email.after_response(ticket, comment)
+            add_comment_email_thread = threading.Thread(target=ticket_add_comment_email, args=(ticket, comment))
+            add_comment_email_thread.start()
             return redirect("ticket-detail", slug=ticket.slug)
         if (
             request.POST and solution_form.is_valid()
@@ -111,7 +116,9 @@ def ticket_detail(request, slug):
             solution.ticket = ticket  # Link the solution to the ticket
             solution.created_by = request.user  # Set the created_by of the solution
             solution.save()
-            ticket_resolved_email.after_response(ticket, solution)
+            # ticket_resolved_email.after_response(ticket, solution)
+            ticket_resolved_email_thread = threading.Thread(target=ticket_resolved_email, args=(ticket, solution))
+            ticket_resolved_email_thread.start()
             messages.success(request, "Solution has been added successfully!")
             return redirect("ticket-detail", slug=ticket.slug)
 
@@ -150,7 +157,9 @@ def ticket_create(request):
             ticket.created_by = request.user  # Set 'created_by' to the logged-in user
             ticket.save()  # Save the ticket to the database
             messages.success(request, "Ticket has been created successfully!")
-            ticket_created_email.after_response(ticket)
+            # ticket_created_email.after_response(ticket)
+            ticket_created_email_thread = threading.Thread(target=ticket_created_email, args=(ticket,))
+            ticket_created_email_thread.start()
             return redirect(
                 "ticket-list-user"
             )  # Redirect to the ticket list or another relevant page

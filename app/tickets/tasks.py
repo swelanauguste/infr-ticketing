@@ -16,7 +16,7 @@ def generate_short_id():
     return "".join(random.choice(characters) for i in range(length))
 
 
-@after_response.enable
+# @after_response.enable
 def ticket_resolved_email(ticket, solution):
     current_site = Site.objects.get_current()
     domain = current_site.domain
@@ -42,7 +42,7 @@ def ticket_resolved_email(ticket, solution):
     )
 
 
-@after_response.enable
+# @after_response.enable
 def ticket_created_email(ticket):
     current_site = Site.objects.get_current()
     domain = current_site.domain
@@ -68,7 +68,7 @@ def ticket_created_email(ticket):
     )
 
 
-@after_response.enable
+# @after_response.enable
 def ticket_assigned_email(ticket):
     domain = Site.objects.get_current().domain
 
@@ -96,7 +96,7 @@ def ticket_assigned_email(ticket):
     )
 
 
-@after_response.enable
+# @after_response.enable
 def ticket_add_comment_email(ticket, comment):
     current_site = Site.objects.get_current()
     domain = current_site.domain
