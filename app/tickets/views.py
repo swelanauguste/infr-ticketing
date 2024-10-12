@@ -1,3 +1,5 @@
+import threading
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -5,7 +7,7 @@ from django.db.models import OuterRef, Subquery
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from users.models import User
-import threading
+
 from .forms import (
     CommentForm,
     TicketAssignmentForm,
@@ -14,7 +16,12 @@ from .forms import (
     TicketUpdateForm,
 )
 from .models import Ticket, TicketAssignment
-from .tasks import ticket_add_comment_email, ticket_assigned_email, ticket_created_email, ticket_resolved_email
+from .tasks import (
+    ticket_add_comment_email,
+    ticket_assigned_email,
+    ticket_created_email,
+    ticket_resolved_email,
+)
 
 
 @login_required
@@ -39,8 +46,49 @@ def ticket_list_assigned(request):
 
 @login_required
 def ticket_list(request):
-    tickets = Ticket.objects.all()
-    return render(request, "tickets/ticket_list.html", {"tickets": tickets})
+    status_filter = request.GET.get("status", "")
+
+    if status_filter == "all":
+        tickets = Ticket.objects.all()  # Return all tickets if 'all' is selected
+    elif status_filter:
+        tickets = Ticket.objects.filter(
+            status=status_filter
+        )  # Filter tickets based on selected status
+    else:
+        tickets = Ticket.objects.exclude(
+            status="resolved"
+        )  # Default: show unresolved tickets
+
+    return render(
+        request,
+        "tickets/ticket_list.html",
+        {"tickets": tickets, "status_filter": status_filter},
+    )
+
+
+@login_required
+def user_ticket_list(request):
+    status_filter = request.GET.get("status", "")
+
+    if status_filter == "all":
+        tickets = (
+            Ticket.objects.filter(created_by=request.user)
+            .exclude(status="resolved")
+            .order_by("-created_at")[:10]
+        )
+    elif status_filter:
+        tickets = Ticket.objects.filter(created_by=request.user).filter(status=status_filter)
+    else:
+        tickets = (
+            Ticket.objects.filter(created_by=request.user)
+            .exclude(status="resolved")
+            .order_by("-created_at")[:10]
+        )
+    return render(
+        request,
+        "tickets/users/list.html",
+        {"tickets": tickets, "status_filter": status_filter},
+    )
 
 
 @login_required
@@ -61,13 +109,13 @@ def ticket_assign_view(request, slug):
                 "Ticket has been assigned to {} successfully!".format(assign_to),
             )
             # ticket_assigned_email.after_response(ticket)
-            assign_email_thread = threading.Thread(target=ticket_assigned_email, args=ticket)
-            assign_email_thread.start()
-            
-            # Redirect back to the complaint detail page or the page you want
-            return redirect(
-                reverse_lazy("ticket-detail", kwargs={"slug": slug})
+            assign_email_thread = threading.Thread(
+                target=ticket_assigned_email, args=(ticket,)
             )
+            assign_email_thread.start()
+
+            # Redirect back to the complaint detail page or the page you want
+            return redirect(reverse_lazy("ticket-detail", kwargs={"slug": slug}))
 
     # No need to handle the 'GET' request or render a template,
     # since the form is being posted and handled via another page.
@@ -106,7 +154,9 @@ def ticket_detail(request, slug):
             comment.save()
             messages.success(request, "Comment has been added successfully!")
             # ticket_add_comment_email.after_response(ticket, comment)
-            add_comment_email_thread = threading.Thread(target=ticket_add_comment_email, args=(ticket, comment))
+            add_comment_email_thread = threading.Thread(
+                target=ticket_add_comment_email, args=(ticket, comment)
+            )
             add_comment_email_thread.start()
             return redirect("ticket-detail", slug=ticket.slug)
         if (
@@ -117,7 +167,9 @@ def ticket_detail(request, slug):
             solution.created_by = request.user  # Set the created_by of the solution
             solution.save()
             # ticket_resolved_email.after_response(ticket, solution)
-            ticket_resolved_email_thread = threading.Thread(target=ticket_resolved_email, args=(ticket, solution))
+            ticket_resolved_email_thread = threading.Thread(
+                target=ticket_resolved_email, args=(ticket, solution)
+            )
             ticket_resolved_email_thread.start()
             messages.success(request, "Solution has been added successfully!")
             return redirect("ticket-detail", slug=ticket.slug)
@@ -128,8 +180,8 @@ def ticket_detail(request, slug):
         solution_form = TicketSolutionForm(initial={"ticket": ticket})
         try:
             ticket_assign_form = TicketAssignmentForm(
-            initial={"assign_to": ticket.assigned_tickets.first().assign_to}
-        )
+                initial={"assign_to": ticket.assigned_tickets.first().assign_to}
+            )
         except:
             ticket_assign_form = TicketAssignmentForm()
 
@@ -158,7 +210,9 @@ def ticket_create(request):
             ticket.save()  # Save the ticket to the database
             messages.success(request, "Ticket has been created successfully!")
             # ticket_created_email.after_response(ticket)
-            ticket_created_email_thread = threading.Thread(target=ticket_created_email, args=(ticket,))
+            ticket_created_email_thread = threading.Thread(
+                target=ticket_created_email, args=(ticket,)
+            )
             ticket_created_email_thread.start()
             return redirect(
                 "ticket-list-user"
@@ -167,14 +221,3 @@ def ticket_create(request):
         form = TicketCreateForm()
 
     return render(request, "tickets/create_ticket.html", {"form": form})
-
-
-@login_required
-def user_ticket_list(request):
-
-    tickets = (
-        Ticket.objects.filter(created_by=request.user)
-        .exclude(status="closed")
-        .order_by("-created_at")[:10]
-    )
-    return render(request, "tickets/users/list.html", {"tickets": tickets})

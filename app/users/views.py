@@ -1,4 +1,6 @@
-import after_response
+import threading
+
+# import after_response
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth import views as auth_views
@@ -53,9 +55,14 @@ def user_registration_view(request):
                 user = form.save(commit=False)
                 user.is_active = False
                 user.save()
-                user_registration_email.after_response(
-                    request, user, form.cleaned_data["email"]
+                # user_registration_email.after_response(
+                #     request, user, form.cleaned_data["email"]
+                # )
+                user_registration_email_thread = threading.Thread(
+                    target=user_registration_email,
+                    args=(request, user, form.cleaned_data["email"]),
                 )
+                user_registration_email_thread.start()
                 # user_registration_email(request, user, form.cleaned_data.get("email"))
                 return redirect("login")
             except IntegrityError:
@@ -70,7 +77,6 @@ def user_registration_view(request):
     else:
         form = UserCustomCreationForm()
     return render(request, "users/register.html", {"form": form})
-
 
 
 @login_required

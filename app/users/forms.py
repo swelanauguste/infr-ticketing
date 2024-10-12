@@ -10,6 +10,7 @@ class UserUpdateForm(forms.ModelForm):
         fields = [
             "first_name",
             "last_name",
+            "department",
             "email",
             "phone",
         ]
@@ -27,11 +28,11 @@ class UserCustomCreationForm(UserCreationForm):
     def clean_email(self):
         email = self.cleaned_data.get("email")
         domain = email.split("@")[-1]
-        
+
         if User.objects.filter(email=email).exists():
-                raise forms.ValidationError(
-                    f"The email '{email}' is already taken. Please use a different email."
-                )
+            raise forms.ValidationError(
+                f"The email '{email}' is already taken. Please use a different email."
+            )
         # Validate email domain
         if domain not in self.allowed_domains:
             raise forms.ValidationError(

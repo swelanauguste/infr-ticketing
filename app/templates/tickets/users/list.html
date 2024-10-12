@@ -3,13 +3,14 @@
 {% load humanize %}
 
 {% block content %}
-<!-- <div class="d-flex py-2 justify-content-end">
-    <a href="">
-        <span class="material-symbols-outlined fs-1 fw-bold text-dark">
-            book_online
-        </span>
-    </a>
-</div> -->
+<form action="" method="get">
+    <select class="form-control" name="status" onchange="this.form.submit()">
+        <option value="open" {% if status_filter == 'open' %}selected{% endif %}>Open</option>
+        <option value="on_hold" {% if status_filter == 'on_hold' %}selected{% endif %}>On Hold</option>
+        <option value="resolved" {% if status_filter == 'resolved' %}selected{% endif %}>Resolved</option>
+        <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All Tickets</option>
+    </select>
+</form>
 <br>
 {% for ticket in tickets %}
 <a class="text-decoration-none text-dark"

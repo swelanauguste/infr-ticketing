@@ -1,4 +1,4 @@
-import after_response
+# import after_response
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.sites.models import Site
@@ -12,7 +12,7 @@ from django.utils.http import urlsafe_base64_encode
 from .tokens import account_activation_token
 
 
-@after_response.enable
+# @after_response.enable
 def user_registration_email(request, user, to_email):
     current_site = Site.objects.get_current()
     domain = current_site.domain
