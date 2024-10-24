@@ -36,7 +36,7 @@
         href="{% static 'css/styles.css' %}">
 </head>
 
-<body class="container-fluid col-lg-4 col-md-6 mx-auto min-vh-100">
+<body class="text-bg-dark container-fluid col-lg-4 col-md-6 mx-auto min-vh-100">
     {% include 'messages.html' %}
 
     {% include 'top_banner.html' %}
@@ -50,16 +50,14 @@
     </div>
     {% include 'footer.html' %}
     <script>
-        $('button[type="submit"]').addClass('btn btn-dark rounded-pill px-5');
+        $('button[type="submit"]').addClass('btn btn-lg btn-light rounded-pill px-5');
         $('input[type="text"]').addClass('rounded-pill');
         $('input[type="password"]').addClass('rounded-pill');
         $('input[type="email"]').addClass('rounded-pill');
         $('input[type="file"]').addClass('rounded-pill');
         $('select').addClass('form-control rounded-pill');
         $('textarea').addClass('form-control rounded-4');
-        $('a').addClass('text-dark');
         $('h1').addClass('display-4 text-center fw-bold');
-        <!-- $('id_department').addClass('display-4 text-center fw-bold'); -->
     </script>
     <script
         src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"

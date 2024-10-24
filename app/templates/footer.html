@@ -1,5 +1,5 @@
 {% if request.user.is_authenticated %}
-<div class="fixed-bottom bg-light px-3 mx-auto">
+<div class="fixed-bottom bg-light px-3 mx-auto border-top border-dark">
     <div class="col-lg-4 mx-auto">
 
         <div class="d-flex justify-content-between px-4 py-2">
@@ -17,11 +17,7 @@
                     home
                 </span>
             </a>
-            <a href="{% url 'ticket-list' %}">
-                <span class="material-symbols-outlined fs-1 fw-bold text-dark">
-                    book_online
-                </span>
-            </a>
+          
             {% else %}
             <a class="text-dark"
                 href="{% url 'ticket-list-user' %}">

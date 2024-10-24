@@ -14,16 +14,25 @@
     </select>
 </form>
 <br>
+{% if request.user.role != 'customer' %}
+<a href="{% url 'ticket-list' %}">
+    <span class="material-symbols-outlined fs-1 fw-bold text-light">
+        book_online
+    </span>
+</a>
+<br>
+{% endif %}
 {% for ticket in tickets %}
 <div class="mt-2">
     <a class="text-decoration-none text-dark"
         href="{% url 'ticket-detail' ticket.slug %}">
-        <div class="p-4 shadow rounded-4 mb-2 bg-light
+        <div class="p-4 shadow rounded-4 mb-2
         {% if ticket.status == 'resolved' %}
-            border border-secondary border-3 bg-opacity-75
+            bg-secondary 
         {% elif ticket.status == 'on_hold' %}
-            border border-warning border-3
+            text-bg-info 
         {% else %}
+            bg-light
         {% endif %}">
 
             <h3 class="fw-bold">{{ticket.ref|upper}} <span class="float-end"> {{ticket.get_status_display|upper}}</span></h3>

@@ -12,6 +12,7 @@
     </select>
 </form>
 <br>
+
 {% for ticket in tickets %}
 <a class="text-decoration-none text-dark"
     href="{% url 'ticket-detail' ticket.slug %}">

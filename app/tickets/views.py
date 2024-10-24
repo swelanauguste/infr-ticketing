@@ -26,12 +26,11 @@ from .tasks import (
 
 @login_required
 def ticket_list_assigned(request):
+    status_filter = request.GET.get("status", "")
     # Get the latest assignment for each ticket
     latest_assignment = TicketAssignment.objects.filter(ticket=OuterRef("pk")).order_by(
         "-created_at"
     )
-
-    # Get tickets assigned to the current user based on the most recent assignment
     assigned_tickets = Ticket.objects.filter(
         assigned_tickets__in=Subquery(
             latest_assignment.values("pk")[
@@ -40,8 +39,23 @@ def ticket_list_assigned(request):
         ),
         assigned_tickets__assign_to=request.user,  # Assigned to the logged-in user
     ).distinct()
-
-    return render(request, "tickets/ticket_list.html", {"tickets": assigned_tickets})
+    # if status_filter == "all":
+    #     # Get tickets assigned to the current user based on the most recent assignment
+    #     assigned_tickets = Ticket.objects.filter(
+    #     assigned_tickets__in=Subquery(
+    #         latest_assignment.values("pk")[
+    #             :1
+    #         ]  # Get only the most recent assignment per ticket
+    #     ),
+    #     assigned_tickets__assign_to=request.user,  # Assigned to the logged-in user
+    # ).distinct()
+    if status_filter:
+        assigned_tickets = assigned_tickets.filter(status=status_filter)
+    else:
+        assigned_tickets = assigned_tickets.exclude(
+            status="resolved"
+        )  # Default: show unresolved tickets
+    return render(request, "tickets/ticket_list.html", {"tickets": assigned_tickets, 'status_filter': status_filter})
 
 
 @login_required
