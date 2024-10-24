@@ -7,10 +7,10 @@
 Assigned
 <form action="" method="get">
     <select class="form-control" name="status" onchange="this.form.submit()">
+        <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All Tickets</option>
         <option value="open" {% if status_filter == 'open' %}selected{% endif %}>Open</option>
         <option value="on_hold" {% if status_filter == 'on_hold' %}selected{% endif %}>On Hold</option>
         <option value="resolved" {% if status_filter == 'resolved' %}selected{% endif %}>Resolved</option>
-        <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All Tickets</option>
     </select>
 </form>
 <br>
