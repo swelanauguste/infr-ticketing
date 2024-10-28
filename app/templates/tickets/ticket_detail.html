@@ -4,14 +4,14 @@
 {% load humanize %}
 
 {% block content %}
-<p>{{ticket}}</p>
+<h1>{{ticket.ref|upper}}</h1>
 <br>
 <p><strong>Description: </strong>{{ticket.description}}</p>
 <p><strong>Owner: </strong>{{ticket.created_by}} <span
         class="text-muted small">{{ticket.created_at|naturaltime}}</span>
 </p>
 {% if ticket.assigned_tickets.first %}
-<p><strong>Assigned to: </strong><a
+<p><strong>Assigned to: </strong><a class="text-light"
         href="">{{ticket.assigned_tickets.first.assign_to}}</a></p>
 {% endif %}
 {% if ticket.attachment %}
@@ -71,7 +71,7 @@
 <div class="text-start p-2 me-5 mb-1">
     <div class="">
         <span class="small">{{ comment.comment }}</span><br>
-        <p class="small"><span class="text-muted small"><a href="">
+        <p class="small"><span class="text-muted small"><a class="text-light" href="">
                     {{ comment.created_by|lower }}</a> -
                 {{ comment.created_at|naturaltime }}</span></p>
     </div>

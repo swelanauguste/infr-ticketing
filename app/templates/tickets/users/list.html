@@ -5,10 +5,10 @@
 {% block content %}
 <form action="" method="get">
     <select class="form-control" name="status" onchange="this.form.submit()">
+        <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All Tickets</option>
         <option value="open" {% if status_filter == 'open' %}selected{% endif %}>Open</option>
         <option value="on_hold" {% if status_filter == 'on_hold' %}selected{% endif %}>On Hold</option>
         <option value="resolved" {% if status_filter == 'resolved' %}selected{% endif %}>Resolved</option>
-        <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All Tickets</option>
     </select>
 </form>
 <br>
@@ -16,7 +16,14 @@
 {% for ticket in tickets %}
 <a class="text-decoration-none text-dark"
     href="{% url 'ticket-detail' ticket.slug %}">
-    <div class="p-4 shadow rounded-4 bg-light mb-2">
+    <div class="p-4 shadow rounded-4 mb-2
+     {% if ticket.status == 'resolved' %}
+            text-ng-secondary
+        {% elif ticket.status == 'on_hold' %}
+            text-bg-info
+        {% else %}
+            bg-light
+        {% endif %}">
         <span class="fw-bold">{{ticket}}</span><br>
         <span>
             {{ticket.description|truncatechars:100}}</span><br>
